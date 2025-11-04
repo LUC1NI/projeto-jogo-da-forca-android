@@ -1,4 +1,4 @@
-package com.example.jogodaforca.dados.local.modelo
+package com.example.jogodaforca.data.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
