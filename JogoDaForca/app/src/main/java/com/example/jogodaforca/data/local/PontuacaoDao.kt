@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PontuacaoDao {
 
-    @Query("SELECT * FROM pontuacoes ORDER BY pontuacao DESC")
-    fun obterTodasPontuacoes(): Flow<List<PontuacaoEntidade>> //
+    @Query("SELECT * FROM pontuacoes")
+    fun obterTodasPontuacoes(): Flow<List<PontuacaoEntidade>>
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun inserirPontuacao(pontuacao: PontuacaoEntidade) //
+    suspend fun inserirPontuacao(pontuacao: PontuacaoEntidade)
 
     @Update
     suspend fun atualizarPontuacao(pontuacao: PontuacaoEntidade)
