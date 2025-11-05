@@ -54,14 +54,14 @@ fun GraficoNavegacaoApp() {
         startDestination = Rota.Login.rota 
     ) {
 
-        composable(rota = Rota.Login.rota) {
+        composable(route = Rota.Login.rota) {
 
             TelaLogin(navController = navController)
         }
 
 
         composable(
-            rota = Rota.AreaJogador.rota,
+            route = Rota.AreaJogador.rota,
 
             arguments = listOf(navArgument("nomeUsuario") { type = NavType.StringType })
         ) { backStackEntry ->
@@ -76,7 +76,7 @@ fun GraficoNavegacaoApp() {
         }
 
 
-        composable(rota = Rota.AreaAdmin.rota) {
+        composable(route = Rota.AreaAdmin.rota) {
 
             TelaAreaAdmin(
                 navControllerGlobal = navController,

@@ -39,7 +39,7 @@ fun TelaAreaJogador(
     nomeJogador: String
 ) {
 
-    val navControllerAninhado = rememberNavController() // [2]
+    val navControllerAninhado = rememberNavController()
 
 
     val itensDaBarra = listOf(
@@ -69,7 +69,6 @@ fun TelaAreaJogador(
             )
         },
         bottomBar = {
-            // Requisito: "Bottom Navigation Bar"
             NavigationBar {
                 itensDaBarra.forEach { item ->
                     NavigationBarItem(
@@ -91,36 +90,35 @@ fun TelaAreaJogador(
     ) { paddingValues ->
 
 
+
         NavHost(
             navController = navControllerAninhado,
             startDestination = Rota.Jogo.rota,
             modifier = Modifier.padding(paddingValues)
         ) {
 
-            composable(rota = Rota.Jogo.rota) {
+            composable(route = Rota.Jogo.rota) {
                 TelaJogo(
-
                     viewModel = viewModel(factory = fabricaViewModel),
                     nomeJogador = nomeJogador
                 )
             }
 
-
-            composable(rota = Rota.Ranking.rota) {
+            composable(route = Rota.Ranking.rota) {
                 TelaRanking(
-
                     viewModel = viewModel(factory = fabricaViewModel)
                 )
             }
 
-
-            composable(rota = Rota.Configuracoes.rota) {
+            composable(route = Rota.Configuracoes.rota) {
                 TelaConfiguracoes()
             }
         }
     }
 }
 
-}
+
+
+
 
 
