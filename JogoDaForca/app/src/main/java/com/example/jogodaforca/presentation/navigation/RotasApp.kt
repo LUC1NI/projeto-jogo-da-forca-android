@@ -11,7 +11,9 @@ sealed class Rota(val rota: String) {
     object AreaAdmin : Rota("area_admin")
 
 
-    object Jogo : Rota("jogo")
+    object Jogo : Rota("jogo/{nomeJogador}") {
+        fun criarRota(nomeJogador: String) = "jogo/$nomeJogador"
+    }
 
     object Ranking : Rota("ranking")
 

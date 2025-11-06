@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jogodaforca.data.local.model.PontuacaoEntidade
 import com.example.jogodaforca.presentation.viewmodel.RankingViewModel
@@ -18,11 +19,13 @@ import com.example.jogodaforca.presentation.viewmodel.RankingViewModel
 fun TelaRanking(
     viewModel: RankingViewModel
 ) {
-    val estado by viewModel.estadoUi.collectAsStateWithLifecycle() 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val estado by viewModel.estadoUi.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize()git 
             .padding(16.dp)
     ) {
         if (estado.estaCarregando) {

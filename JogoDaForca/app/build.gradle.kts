@@ -50,14 +50,10 @@ android {
 
 dependencies {
 
-    // Firebase (Requisito: Integração Externa)
     implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
     implementation("com.google.firebase:firebase-firestore-ktx")
 
-    // Navegação (Requisito: 6 Telas / Bottom Nav)
-    implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    // Coroutines para 'await()' do Firebase (converte callbacks em suspend fun)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 
     implementation("androidx.core:core-ktx:1.9.0")
@@ -82,8 +78,13 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
 
 }

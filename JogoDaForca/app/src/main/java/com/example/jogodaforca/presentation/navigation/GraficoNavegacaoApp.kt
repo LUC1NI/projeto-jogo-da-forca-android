@@ -16,6 +16,8 @@ import com.example.jogodaforca.presentation.screens.TelaLogin
 import com.example.jogodaforca.presentation.viewmodel.FabricaViewModel
 import com.example.jogodaforca.presentation.screens.TelaAreaAdmin
 import com.example.jogodaforca.presentation.screens.TelaAreaJogador
+import com.example.jogodaforca.presentation.screens.TelaJogo
+import com.example.jogodaforca.presentation.viewmodel.JogoViewModel
 
 @Composable
 fun GraficoNavegacaoApp() {
@@ -82,6 +84,12 @@ fun GraficoNavegacaoApp() {
                 navControllerGlobal = navController,
                 fabricaViewModel = fabricaViewModel
             )
+        }
+        composable(route = Rota.Jogo.rota) {
+            val viewModel: JogoViewModel =
+                androidx.lifecycle.viewmodel.compose.viewModel(factory = fabricaViewModel)
+
+            TelaJogo(viewModel = viewModel, nomeJogador = "Jogador")
         }
     }
 }

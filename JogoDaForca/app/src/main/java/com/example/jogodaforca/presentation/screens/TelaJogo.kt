@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jogodaforca.presentation.viewmodel.EstadoJogo
 import com.example.jogodaforca.presentation.viewmodel.JogoViewModel
@@ -27,7 +28,9 @@ fun TelaJogo(
     viewModel: JogoViewModel,
     nomeJogador: String
 ) {
-    val estado by viewModel.estadoUi.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val estado by viewModel.estadoUi.collectAsStateWithLifecycle(lifecycleOwner = lifecycleOwner)
 
     Column(
         modifier = Modifier
