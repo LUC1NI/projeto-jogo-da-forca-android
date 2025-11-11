@@ -51,6 +51,7 @@ class JogoViewModel(
     }
 
 
+
     fun processarPalpite(letra: Char) {
         val estadoAtual = _estadoUi.value
         if (estadoAtual.estadoDoJogo!= EstadoJogo.JOGANDO) return
@@ -59,17 +60,17 @@ class JogoViewModel(
         if (palpite in estadoAtual.letrasUsadas) return
 
         val novasLetrasUsadas = estadoAtual.letrasUsadas + palpite
-        var palpiteCorreto = false
+
+
+        val palpiteCorreto = estadoAtual.palavraParaAdivinhar.contains(palpite)
 
         val novaPalavraExibida = estadoAtual.palavraParaAdivinhar.map { charDaPalavra ->
-            if (charDaPalavra == palpite || charDaPalavra in estadoAtual.letrasUsadas) {
-            palpiteCorreto = true
-            charDaPalavra
-        } else {
-            '_'
-        }
+            if (charDaPalavra in novasLetrasUsadas) {
+                charDaPalavra
+            } else {
+                '_'
+            }
         }.joinToString(separator = "")
-
 
         val novasTentativas = if (palpiteCorreto) estadoAtual.tentativasRestantes else estadoAtual.tentativasRestantes - 1
         val novaPontuacao = if (palpiteCorreto) estadoAtual.pontuacao + 10 else estadoAtual.pontuacao - 5
@@ -80,7 +81,6 @@ class JogoViewModel(
             novasTentativas <= 0 -> EstadoJogo.DERROTA
             else -> EstadoJogo.JOGANDO
         }
-
 
         _estadoUi.update {
             it.copy(
