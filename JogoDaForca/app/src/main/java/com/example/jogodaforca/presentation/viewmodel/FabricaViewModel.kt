@@ -9,6 +9,7 @@ class FabricaViewModel(
     private val repositorio: RepositorioJogo
 ) : ViewModelProvider.Factory {
 
+
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         when {
@@ -23,7 +24,12 @@ class FabricaViewModel(
             modelClass.isAssignableFrom(AdminViewModel::class.java) -> {
                 return AdminViewModel(repositorio) as T
             }
+
+            modelClass.isAssignableFrom(CategoriaViewModel::class.java) -> {
+                return CategoriaViewModel(repositorio) as T
+            }
         }
-        throw IllegalArgumentException("ViewModel Class Desconhecida: ${modelClass.name}") // [10, 11]
+
+        throw IllegalArgumentException("ViewModel Class Desconhecida: ${modelClass.name}")
     }
 }

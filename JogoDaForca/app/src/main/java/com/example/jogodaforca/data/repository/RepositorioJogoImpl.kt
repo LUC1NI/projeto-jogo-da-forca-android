@@ -28,27 +28,23 @@ class RepositorioJogoImpl(
     }
 
 
-    override suspend fun obterPalavrasParaJogo(): ResultadoDados<List<PalavraEntidade>> {
-        return try {
-            var palavrasEmCache = palavraDao.obterTodasPalavras()
+    override suspend fun obterPalavrasParaJogo(categoria: String): ResultadoDados<List<PalavraEntidade>> {
+        when (val resultadoCache = assegurarCacheDePalavras()) {
+            is ResultadoDados.Erro -> return resultadoCache
+            is ResultadoDados.Sucesso -> {
+                return try {
+                    val palavrasEmCache = palavraDao.obterTodasPalavras()
+                    val palavrasFiltradas = palavrasEmCache.filter { it.categoria.equals(categoria, ignoreCase = true) }
 
-            if (palavrasEmCache.isEmpty()) {
-                val palavrasRemotas = fonteDadosFirebase.obterTodasPalavras()
-
-                palavrasEmCache = palavrasRemotas.map { palavraRemota ->
-                    PalavraEntidade(
-                        palavra = palavraRemota.palavra,
-                        categoria = palavraRemota.categoria
-                    )
+                    if (palavrasFiltradas.isEmpty()) {
+                        ResultadoDados.Erro("Nenhuma palavra encontrada para a categoria '$categoria'.")
+                    } else {
+                        ResultadoDados.Sucesso(palavrasFiltradas)
+                    }
+                } catch (e: Exception) {
+                    ResultadoDados.Erro("Falha ao ler palavras do cache: ${e.message}")
                 }
-
-
-                palavraDao.inserirTodas(palavrasEmCache)
             }
-            ResultadoDados.Sucesso(palavrasEmCache)
-
-        } catch (e: Exception) {
-            ResultadoDados.Erro("Falha ao carregar palavras: ${e.message}")
         }
     }
 
@@ -77,6 +73,45 @@ class RepositorioJogoImpl(
             ResultadoDados.Sucesso(Unit)
         } catch (e: Exception) {
             ResultadoDados.Erro(e.message?: "Erro desconhecido ao deletar palavra")
+        }
+    }
+    private suspend fun assegurarCacheDePalavras(): ResultadoDados<Unit> {
+        return try {
+            val palavrasEmCache = palavraDao.obterTodasPalavras()
+            if (palavrasEmCache.isEmpty()) {
+                val palavrasRemotas = fonteDadosFirebase.obterTodasPalavras()
+
+                val palavrasParaCache = palavrasRemotas.map { palavraRemota ->
+                    PalavraEntidade(
+                        palavra = palavraRemota.palavra,
+                        categoria = palavraRemota.categoria
+                    )
+                }
+                palavraDao.inserirTodas(palavrasParaCache)
+            }
+            ResultadoDados.Sucesso(Unit)
+        } catch (e: Exception) {
+            ResultadoDados.Erro("Falha ao assegurar cache de palavras: ${e.message}")
+        }
+    }
+
+    override suspend fun obterCategoriasDisponiveis(): ResultadoDados<List<String>> {
+        when (val resultadoCache = assegurarCacheDePalavras()) {
+            is ResultadoDados.Erro -> return resultadoCache
+            is ResultadoDados.Sucesso -> {
+                return try {
+                    val palavrasEmCache = palavraDao.obterTodasPalavras()
+
+                    val categorias = palavrasEmCache
+                        .map { it.categoria.uppercase() }
+                        .toSet()
+                        .sorted()
+
+                    ResultadoDados.Sucesso(categorias)
+                } catch (e: Exception) {
+                    ResultadoDados.Erro("Falha ao ler categorias do cache: ${e.message}")
+                }
+            }
         }
     }
 }

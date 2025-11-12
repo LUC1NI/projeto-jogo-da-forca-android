@@ -16,6 +16,7 @@ import com.example.jogodaforca.presentation.screens.TelaLogin
 import com.example.jogodaforca.presentation.viewmodel.FabricaViewModel
 import com.example.jogodaforca.presentation.screens.TelaAreaAdmin
 import com.example.jogodaforca.presentation.screens.TelaAreaJogador
+import com.example.jogodaforca.presentation.screens.TelaEscolhaCategoria
 import com.example.jogodaforca.presentation.screens.TelaJogo
 import com.example.jogodaforca.presentation.viewmodel.JogoViewModel
 
@@ -50,46 +51,49 @@ fun GraficoNavegacaoApp() {
 
     val navController = rememberNavController()
 
-
     NavHost(
         navController = navController,
-        startDestination = Rota.Login.rota 
+        startDestination = Rota.Login.rota
     ) {
-
         composable(route = Rota.Login.rota) {
-
             TelaLogin(navController = navController)
         }
 
+        composable(
+            route = Rota.EscolhaCategoria.rota,
+            arguments = listOf(navArgument("nomeUsuario") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val nomeUsuario = backStackEntry.arguments?.getString("nomeUsuario")?: "Jogador"
+            TelaEscolhaCategoria(
+                navController = navController,
+                fabricaViewModel = fabricaViewModel,
+                nomeUsuario = nomeUsuario
+            )
+        }
 
         composable(
             route = Rota.AreaJogador.rota,
-
-            arguments = listOf(navArgument("nomeUsuario") { type = NavType.StringType })
+            arguments = listOf(
+                navArgument("nomeUsuario") { type = NavType.StringType },
+                navArgument("categoria") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
-
             val nomeUsuario = backStackEntry.arguments?.getString("nomeUsuario")?: "Jogador"
+            val categoria = backStackEntry.arguments?.getString("categoria")?: "GERAL" // "GERAL" como fallback
 
             TelaAreaJogador(
                 navControllerGlobal = navController,
                 fabricaViewModel = fabricaViewModel,
-                nomeJogador = nomeUsuario
+                nomeJogador = nomeUsuario,
+                categoria = categoria
             )
         }
 
-
         composable(route = Rota.AreaAdmin.rota) {
-
             TelaAreaAdmin(
                 navControllerGlobal = navController,
                 fabricaViewModel = fabricaViewModel
             )
-        }
-        composable(route = Rota.Jogo.rota) {
-            val viewModel: JogoViewModel =
-                androidx.lifecycle.viewmodel.compose.viewModel(factory = fabricaViewModel)
-
-            TelaJogo(viewModel = viewModel, nomeJogador = "Jogador")
         }
     }
 }

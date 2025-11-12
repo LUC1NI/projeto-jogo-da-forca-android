@@ -16,19 +16,13 @@ class JogoViewModel(
     private val _estadoUi = MutableStateFlow(JogoEstado())
     val estadoUi = _estadoUi.asStateFlow()
 
-    init {
-        carregarNovaPalavra()
-    }
 
 
-    fun carregarNovaPalavra() {
-
+    fun carregarNovaPalavra(categoria: String) {
         _estadoUi.value = JogoEstado(estadoDoJogo = EstadoJogo.CARREGANDO)
 
         viewModelScope.launch {
-
-            when (val resultado = repositorio.obterPalavrasParaJogo()) {
-
+            when (val resultado = repositorio.obterPalavrasParaJogo(categoria)) {
 
                 is ResultadoDados.Sucesso -> {
                     val palavra = resultado.dados.random().palavra.uppercase()
@@ -40,7 +34,6 @@ class JogoViewModel(
                     )
                 }
                 is ResultadoDados.Erro -> {
-
                     _estadoUi.value = JogoEstado(
                         mensagemErro = resultado.mensagem,
                         estadoDoJogo = EstadoJogo.ERRO

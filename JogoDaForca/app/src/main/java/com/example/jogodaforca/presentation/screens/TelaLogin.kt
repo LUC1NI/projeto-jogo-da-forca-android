@@ -33,20 +33,17 @@ fun TelaLogin(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
         Button(onClick = {
             val nomeLimpo = nomeUsuario.trim()
 
             if (nomeLimpo.lowercase() == "admin") {
-
                 navController.navigate(Rota.AreaAdmin.rota) {
-
                     popUpTo(Rota.Login.rota) { inclusive = true }
                 }
             } else if (nomeLimpo.isNotBlank()) {
 
-                navController.navigate(Rota.AreaJogador.criarRota(nomeLimpo)) {
-
-                    popUpTo(Rota.Login.rota) { inclusive = true }
+                navController.navigate(Rota.EscolhaCategoria.criarRota(nomeLimpo)) {
                 }
             }
         }) {

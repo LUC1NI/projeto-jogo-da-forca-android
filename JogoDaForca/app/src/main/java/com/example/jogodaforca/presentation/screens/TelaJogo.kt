@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,12 +23,18 @@ import com.example.jogodaforca.presentation.viewmodel.EstadoJogo
 import com.example.jogodaforca.presentation.viewmodel.JogoViewModel
 
 
+
 @Composable
 fun TelaJogo(
     viewModel: JogoViewModel,
-    nomeJogador: String
+    nomeJogador: String,
+    categoria: String
 ) {
     val estado by viewModel.estadoUi.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.carregarNovaPalavra(categoria)
+    }
 
     Column(
         modifier = Modifier
@@ -36,17 +43,27 @@ fun TelaJogo(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround
     ) {
+
+        Text(
+            text = "Categoria: ${categoria.uppercase()}",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
         DesenhoForca(tentativasRestantes = estado.tentativasRestantes)
 
         PalavraOculta(palavra = estado.palavraExibida)
+
+
 
         Teclado(
             letrasUsadas = estado.letrasUsadas,
             habilitado = estado.estadoDoJogo == EstadoJogo.JOGANDO,
             onLetraClick = { letra ->
-                viewModel.processarPalpite(letra) // [2]
+                viewModel.processarPalpite(letra)
             }
         )
+
 
         if (estado.estadoDoJogo == EstadoJogo.ERRO) {
             Text(
@@ -54,17 +71,22 @@ fun TelaJogo(
                 color = MaterialTheme.colorScheme.error,
                 textAlign = TextAlign.Center
             )
+            Button(onClick = {
+                viewModel.carregarNovaPalavra(categoria)
+            }) {
+                Text("Tentar Novamente")
+            }
         }
 
         if (estado.estadoDoJogo == EstadoJogo.VITORIA) {
             AlertDialog(
-                onDismissRequest = { /* Não pode fechar */ },
+                onDismissRequest = {  },
                 title = { Text("Você Venceu!") },
                 text = { Text("Pontuação: ${estado.pontuacao}") },
                 confirmButton = {
                     Button(onClick = {
                         viewModel.salvarPontuacaoFinal(nomeJogador)
-                        viewModel.carregarNovaPalavra()
+                        viewModel.carregarNovaPalavra(categoria) // Passa a categoria [4]
                     }) {
                         Text("Salvar e Jogar Novamente")
                     }
@@ -79,7 +101,7 @@ fun TelaJogo(
                 text = { Text("A palavra era: ${estado.palavraParaAdivinhar}") },
                 confirmButton = {
                     Button(onClick = {
-                        viewModel.carregarNovaPalavra()
+                        viewModel.carregarNovaPalavra(categoria)
                     }) {
                         Text("Jogar Novamente")
                     }
@@ -88,8 +110,6 @@ fun TelaJogo(
         }
     }
 }
-
-
 @Composable
 private fun DesenhoForca(tentativasRestantes: Int) {
     Canvas(

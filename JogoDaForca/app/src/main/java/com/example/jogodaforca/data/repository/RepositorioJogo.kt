@@ -16,15 +16,13 @@ interface RepositorioJogo {
 
     val fluxoRanking: Flow<List<PontuacaoEntidade>>
 
-
     suspend fun salvarPontuacao(nomeJogador: String, pontuacao: Int)
-
 
     suspend fun deletarPontuacao(pontuacao: PontuacaoEntidade)
 
+    suspend fun obterCategoriasDisponiveis(): ResultadoDados<List<String>>
 
-    suspend fun obterPalavrasParaJogo(): ResultadoDados<List<PalavraEntidade>>
-
+    suspend fun obterPalavrasParaJogo(categoria: String): ResultadoDados<List<PalavraEntidade>>
 
     suspend fun obterPalavrasAdmin(): ResultadoDados<List<PalavraRemota>>
 

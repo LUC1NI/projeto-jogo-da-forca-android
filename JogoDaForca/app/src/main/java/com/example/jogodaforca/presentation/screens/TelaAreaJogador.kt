@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.jogodaforca.presentation.navigation.Rota
 import com.example.jogodaforca.presentation.viewmodel.FabricaViewModel
+import androidx.compose.material.icons.filled.List
 
 
 private data class ItemBarraNavegacao(
@@ -36,7 +37,8 @@ private data class ItemBarraNavegacao(
 fun TelaAreaJogador(
     navControllerGlobal: NavController,
     fabricaViewModel: FabricaViewModel,
-    nomeJogador: String
+    nomeJogador: String,
+    categoria: String
 ) {
 
     val navControllerAninhado = rememberNavController()
@@ -56,18 +58,29 @@ fun TelaAreaJogador(
             TopAppBar(
                 title = { Text(text = "Olá, $nomeJogador!") },
                 actions = {
+                    IconButton(onClick = {
+                        navControllerGlobal.navigate(
+                            Rota.EscolhaCategoria.criarRota(nomeJogador)
+                        ) {
+                            popUpTo(Rota.Login.rota)
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.List,
+                            contentDescription = "Mudar Categoria"
+                        )
+                    }
 
                     IconButton(onClick = {
-
                         navControllerGlobal.navigate(Rota.Login.rota) {
-                            popUpTo(Rota.AreaJogador.rota) { inclusive = true }
+                            popUpTo(Rota.Login.rota) { inclusive = true }
                         }
                     }) {
                         Icon(Icons.Default.ExitToApp, contentDescription = "Sair")
                     }
                 }
             )
-        },
+            },
         bottomBar = {
             NavigationBar {
                 itensDaBarra.forEach { item ->
@@ -100,7 +113,8 @@ fun TelaAreaJogador(
             composable(route = Rota.Jogo.rota) {
                 TelaJogo(
                     viewModel = viewModel(factory = fabricaViewModel),
-                    nomeJogador = nomeJogador
+                    nomeJogador = nomeJogador,
+                    categoria = categoria
                 )
             }
 
